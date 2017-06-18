@@ -13,7 +13,9 @@ import os
 import sys
 import logging                                                             # For outputing a log file
 from math import cos, sin, asin, sqrt, radians
-
+import plotly
+import plotly.plotly as py
+plotly.tools.set_credentials_file(username='linoviadac', api_key='6Efdz3RjOr9N09HHVm43')
 #------------------------------------------------------------------------
 # Using the logging module
 
@@ -105,8 +107,51 @@ def main():
     L = round(calculation(lon1, lat1, lon2, lat2),2)                        # Rounding off the result and keep 2 number after the radix point
     print("The Distance between [{}] and [{}] is:{}".format(city1[3],city2[3],L)+'km\n\n')
     logging.info('The Distance has been calculated and printed.')           # Log information
+    drawing(lon1,lat1,lon2,lat2)
     rule()
 
+#------------------------------------------------------------------------
+# Drawing the line on a map
+def drawing(lon1,lat1,lon2,lat2):
+    airline =[dict(
+        type = 'scattergeo',
+        lat = [lat1, lat2],
+        lon = [lon1, lon2],
+        mode = 'lines',
+        line = dict(
+            width = 2,
+            color = 'blue',
+        ),
+    )]
+
+    layout = dict(
+        title = 'Great Circle from the cities',
+        showlegend = True,
+        geo = dict(
+            resolution = 50,
+            showland = True,
+            showlakes = True,
+            landcolor = 'rbg(204,204,204)',
+            countrycolor = 'rgb(204,204,204)',
+            lakecolor = 'rgb(255,255,255)',
+            projection = dict( type="equirectangular"),
+            coastlinewidth = 2,
+            lataxis = dict(
+                range =[20, 60],
+                showgrid = True,
+                tickmode = 'linear',
+                dtick = 10
+            ),
+            lonaxis = dict(
+                range = [-100, 20],
+                showgrid = True,
+                tickmode ='linear',
+                dtick =20
+            ),
+        )
+    )
+    fig = dict(data=airline, layout = layout)
+    py.iplot ( fig, validate = False, filename ='Great circle')
 #------------------------------------------------------------------------
 # Asking for runnung the programm again
 
